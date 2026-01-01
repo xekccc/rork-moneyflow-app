@@ -15,9 +15,11 @@ import {
   Pressable,
   ScrollView,
   Keyboard,
+  Image,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { Settings, Minus, X, Check } from 'lucide-react-native';
+import { Settings, Minus, X, Check, Sparkles } from 'lucide-react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useBalance } from '@/contexts/BalanceContext';
@@ -187,50 +189,114 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <View style={styles.container}>
+      <LinearGradient
+        colors={[theme.backgroundGradientStart, theme.backgroundGradientEnd]}
+        style={StyleSheet.absoluteFill}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      />
+      <View style={styles.decorativePattern}>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <View
+            key={i}
+            style={[
+              styles.decorativeCircle,
+              {
+                left: ((i * 20) % 100) * SCREEN_WIDTH / 100,
+                top: ((i * 15) % 80) * SCREEN_HEIGHT / 100,
+                backgroundColor: isDark ? 'rgba(244, 208, 63, 0.03)' : 'rgba(212, 175, 55, 0.05)',
+                opacity: 0.3 + (i % 3) * 0.2,
+              },
+            ]}
+          />
+        ))}
+      </View>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       
       <SafeAreaView style={styles.safeArea} edges={['top']}>
         <View style={styles.header}>
-          <View style={styles.headerSpacer} />
-          <Text style={[styles.headerTitle, { color: theme.text }]}>Enough</Text>
+          <View style={styles.headerLeft}>
+            <Sparkles size={18} color={theme.gold} strokeWidth={2} />
+          </View>
+          <View style={styles.headerCenter}>
+            <Text style={[styles.headerTitle, { color: theme.text }]}>财富守护</Text>
+            <Text style={[styles.headerSubtitle, { color: theme.textSecondary }]}>Wealth Guardian</Text>
+          </View>
           <TouchableOpacity 
-            style={[styles.settingsButton, { backgroundColor: theme.surface }]} 
+            style={[styles.settingsButton, { 
+              backgroundColor: isDark ? 'rgba(244, 208, 63, 0.15)' : 'rgba(212, 175, 55, 0.15)',
+              borderWidth: 1,
+              borderColor: theme.gold,
+            }]} 
             onPress={openSettings}
             activeOpacity={0.7}
           >
-            <Settings size={20} color={theme.textSecondary} strokeWidth={2} />
+            <Settings size={20} color={theme.gold} strokeWidth={2} />
           </TouchableOpacity>
         </View>
 
         <View style={styles.content}>
+          <View style={styles.pixiuContainer}>
+            <View style={[styles.pixiuGlow, { backgroundColor: theme.gold }]} />
+            <Image
+              source={{ uri: 'https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/2mko0tb9xkb2vywtyipr3' }}
+              style={styles.pixiuImage}
+              resizeMode="contain"
+            />
+          </View>
+
           <View style={styles.balanceCard}>
-            <Text style={[styles.balanceLabel, { color: theme.textSecondary }]}>
-              CURRENT BALANCE
-            </Text>
-            <View style={styles.balanceRow}>
-              <Text style={[styles.currencySymbol, { color: theme.text }]}>€</Text>
-              <Text style={[styles.balanceWhole, { color: theme.text }]}>{whole}</Text>
-              <Text style={[styles.balanceDecimal, { color: theme.textTertiary }]}>.{decimal}</Text>
-            </View>
-            {todayAllowanceAdded && (
-              <View style={[styles.allowanceBadge, { backgroundColor: isDark ? 'rgba(48, 209, 88, 0.15)' : 'rgba(52, 199, 89, 0.12)' }]}>
-                <Text style={[styles.allowanceText, { color: theme.success }]}>
-                  +€{dailyAllowance.toFixed(2)} added today
-                </Text>
+            <View style={[styles.balanceFrame, {
+              backgroundColor: isDark ? 'rgba(244, 208, 63, 0.1)' : 'rgba(212, 175, 55, 0.08)',
+              borderColor: theme.gold,
+            }]}>
+              <Text style={[styles.balanceLabel, { color: theme.textSecondary }]}>
+                当前余额 · BALANCE
+              </Text>
+              <View style={styles.balanceRow}>
+                <Text style={[styles.currencySymbol, { color: theme.gold }]}>€</Text>
+                <Text style={[styles.balanceWhole, { 
+                  color: theme.text,
+                  textShadowColor: isDark ? 'rgba(244, 208, 63, 0.3)' : 'rgba(212, 175, 55, 0.2)',
+                  textShadowOffset: { width: 0, height: 2 },
+                  textShadowRadius: 8,
+                }]}>{whole}</Text>
+                <Text style={[styles.balanceDecimal, { color: theme.textTertiary }]}>.{decimal}</Text>
               </View>
-            )}
+              {todayAllowanceAdded && (
+                <View style={[styles.allowanceBadge, { 
+                  backgroundColor: isDark ? 'rgba(244, 208, 63, 0.2)' : 'rgba(212, 175, 55, 0.15)',
+                  borderColor: theme.gold,
+                }]}>
+                  <Sparkles size={12} color={theme.gold} strokeWidth={2} />
+                  <Text style={[styles.allowanceText, { color: theme.gold }]}>
+                    +€{dailyAllowance.toFixed(2)} 今日添加
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
 
           <Animated.View style={[styles.spendButtonWrapper, { transform: [{ scale: buttonScale }] }]}>
             <Pressable
-              style={[styles.spendButton, { backgroundColor: theme.text }]}
+              style={[styles.spendButton, {
+                backgroundColor: theme.red,
+                shadowColor: theme.red,
+              }]}
               onPress={handleSpendPress}
               onPressIn={handleButtonPressIn}
               onPressOut={handleButtonPressOut}
             >
-              <Minus size={24} color={theme.background} strokeWidth={2.5} />
-              <Text style={[styles.spendButtonText, { color: theme.background }]}>Spend</Text>
+              <LinearGradient
+                colors={[theme.red, theme.redLight]}
+                style={styles.spendButtonGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <Minus size={24} color="#FFFFFF" strokeWidth={3} />
+                <Text style={styles.spendButtonText}>消费 Spend</Text>
+              </LinearGradient>
             </Pressable>
           </Animated.View>
         </View>
@@ -273,9 +339,14 @@ export default function HomeScreen() {
                 onPress={(e) => e.stopPropagation()}
               >
                 <View style={styles.spendCardHeader}>
-                  <Text style={[styles.spendCardTitle, { color: theme.text }]}>
-                    Enter Amount
-                  </Text>
+                  <View>
+                    <Text style={[styles.spendCardTitle, { color: theme.text }]}>
+                      输入金额
+                    </Text>
+                    <Text style={[styles.spendCardSubtitle, { color: theme.textSecondary }]}>
+                      Enter Amount
+                    </Text>
+                  </View>
                   <TouchableOpacity 
                     onPress={() => setSpendOverlayVisible(false)}
                     style={[styles.closeButton, { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }]}
@@ -314,14 +385,21 @@ export default function HomeScreen() {
                 </View>
 
                 <TouchableOpacity
-                  style={[styles.confirmButton, { backgroundColor: theme.text }]}
+                  style={[styles.confirmButton, { backgroundColor: theme.red }]}
                   onPress={handleSpendConfirm}
                   activeOpacity={0.8}
                 >
-                  <Check size={20} color={theme.background} strokeWidth={2.5} />
-                  <Text style={[styles.confirmButtonText, { color: theme.background }]}>
-                    Confirm Spend
-                  </Text>
+                  <LinearGradient
+                    colors={[theme.red, theme.redLight]}
+                    style={styles.confirmButtonGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Check size={20} color="#FFFFFF" strokeWidth={2.5} />
+                    <Text style={styles.confirmButtonText}>
+                      确认消费 · Confirm
+                    </Text>
+                  </LinearGradient>
                 </TouchableOpacity>
               </Pressable>
             </Pressable>
@@ -366,7 +444,10 @@ export default function HomeScreen() {
               </View>
               
               <View style={styles.settingsHeader}>
-                <Text style={[styles.settingsTitle, { color: theme.text }]}>Settings</Text>
+                <View>
+                  <Text style={[styles.settingsTitle, { color: theme.text }]}>设置</Text>
+                  <Text style={[styles.settingsTitleSub, { color: theme.textSecondary }]}>Settings</Text>
+                </View>
               </View>
 
               <ScrollView 
@@ -376,7 +457,7 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator={false}
               >
                 <Text style={[styles.settingsLabel, { color: theme.textSecondary }]}>
-                  Daily Allowance
+                  每日额度 · DAILY ALLOWANCE
                 </Text>
                 <View style={[styles.settingsInputContainer, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)' }]}>
                   <Text style={[styles.inputCurrency, { color: theme.textTertiary }]}>€</Text>
@@ -392,17 +473,27 @@ export default function HomeScreen() {
                 </View>
                 
                 <Text style={[styles.settingsHint, { color: theme.textTertiary }]}>
-                  This amount will be added to your balance at midnight each day.
+                  此金额将在每天午夜添加到您的余额中。
+                </Text>
+                <Text style={[styles.settingsHintEn, { color: theme.textTertiary }]}>
+                  This amount will be added at midnight each day.
                 </Text>
 
                 <TouchableOpacity
-                  style={[styles.saveButton, { backgroundColor: theme.text }]}
+                  style={[styles.saveButton, { backgroundColor: theme.gold }]}
                   onPress={handleSaveAllowance}
                   activeOpacity={0.8}
                 >
-                  <Text style={[styles.saveButtonText, { color: theme.background }]}>
-                    Save Changes
-                  </Text>
+                  <LinearGradient
+                    colors={[theme.gold, theme.goldLight]}
+                    style={styles.saveButtonGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Text style={styles.saveButtonText}>
+                      保存更改 · Save
+                    </Text>
+                  </LinearGradient>
                 </TouchableOpacity>
               </ScrollView>
             </Animated.View>
@@ -416,6 +507,16 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  decorativePattern: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+  },
+  decorativeCircle: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
   },
   loadingContainer: {
     flex: 1,
@@ -434,15 +535,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 16,
   },
-  headerSpacer: {
+  headerLeft: {
     width: 40,
+    alignItems: 'flex-start',
+  },
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 17,
-    fontWeight: '600' as const,
-    letterSpacing: -0.4,
+    fontSize: 20,
+    fontWeight: '700' as const,
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  headerSubtitle: {
+    fontSize: 11,
+    fontWeight: '500' as const,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase' as const,
   },
   settingsButton: {
     width: 40,
@@ -459,11 +572,38 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 40,
+    paddingTop: 20,
+  },
+  pixiuContainer: {
+    width: 180,
+    height: 180,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  pixiuGlow: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    opacity: 0.15,
+    transform: [{ scale: 1.5 }],
+  },
+  pixiuImage: {
+    width: 160,
+    height: 160,
   },
   balanceCard: {
     alignItems: 'center',
-    marginBottom: 48,
+    marginBottom: 36,
+    paddingHorizontal: 24,
+  },
+  balanceFrame: {
+    borderWidth: 2,
+    borderRadius: 24,
+    padding: 24,
+    alignItems: 'center',
+    minWidth: SCREEN_WIDTH - 80,
   },
   balanceLabel: {
     fontSize: 13,
@@ -497,32 +637,40 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   allowanceText: {
-    fontSize: 14,
-    fontWeight: '600' as const,
+    fontSize: 13,
+    fontWeight: '700' as const,
+    letterSpacing: 0.3,
   },
   spendButtonWrapper: {
     marginTop: 8,
   },
   spendButton: {
+    borderRadius: 30,
+    overflow: 'hidden',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  spendButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 18,
     paddingHorizontal: 48,
-    borderRadius: 28,
     gap: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
   },
   spendButtonText: {
     fontSize: 18,
-    fontWeight: '600' as const,
-    letterSpacing: -0.3,
+    fontWeight: '700' as const,
+    letterSpacing: 0.5,
+    color: '#FFFFFF',
   },
   coinPileContainer: {
     position: 'absolute',
@@ -559,9 +707,15 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   spendCardTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700' as const,
     letterSpacing: -0.4,
+    marginBottom: 4,
+  },
+  spendCardSubtitle: {
+    fontSize: 14,
+    fontWeight: '500' as const,
+    letterSpacing: 0.3,
   },
   closeButton: {
     width: 32,
@@ -605,16 +759,20 @@ const styles = StyleSheet.create({
     fontWeight: '600' as const,
   },
   confirmButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  confirmButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 18,
-    borderRadius: 16,
     gap: 8,
   },
   confirmButtonText: {
     fontSize: 17,
-    fontWeight: '600' as const,
+    fontWeight: '700' as const,
+    color: '#FFFFFF',
   },
   settingsBackdrop: {
     ...StyleSheet.absoluteFillObject,
@@ -653,6 +811,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700' as const,
     letterSpacing: -0.6,
+    marginBottom: 4,
+  },
+  settingsTitleSub: {
+    fontSize: 14,
+    fontWeight: '500' as const,
+    letterSpacing: 0.3,
   },
   settingsKeyboardAvoid: {
     flex: 1,
@@ -684,17 +848,26 @@ const styles = StyleSheet.create({
     fontWeight: '600' as const,
   },
   settingsHint: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 15,
+    lineHeight: 21,
+    marginBottom: 6,
+  },
+  settingsHintEn: {
+    fontSize: 13,
+    lineHeight: 18,
     marginBottom: 28,
   },
   saveButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  saveButtonGradient: {
     paddingVertical: 18,
-    borderRadius: 14,
     alignItems: 'center',
   },
   saveButtonText: {
     fontSize: 17,
-    fontWeight: '600' as const,
+    fontWeight: '700' as const,
+    color: '#2C1810',
   },
 });
