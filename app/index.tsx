@@ -382,6 +382,7 @@ export default function HomeScreen() {
                 backgroundColor: theme.surface,
                 transform: [
                   { translateY: settingsSlide },
+                  { translateY: keyboardOffset },
                 ],
                 maxHeight: SCREEN_HEIGHT * 0.7,
               }
