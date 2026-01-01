@@ -43,6 +43,7 @@ export default function HomeScreen() {
 
   const [spendOverlayVisible, setSpendOverlayVisible] = useState<boolean>(false);
   const [spendAmount, setSpendAmount] = useState<string>('');
+  const [isKeyboardOffsetEnabled, setIsKeyboardOffsetEnabled] = useState<boolean>(false);
   const [settingsVisible, setSettingsVisible] = useState<boolean>(false);
   const [newAllowance, setNewAllowance] = useState<string>('');
   const [flyingCoins, setFlyingCoins] = useState<FlyingCoinData[]>([]);
@@ -109,7 +110,10 @@ export default function HomeScreen() {
   const openSettings = () => {
     console.log('[HomeScreen] Settings button pressed');
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
+    Keyboard.dismiss();
     setNewAllowance(dailyAllowance.toString());
+    setIsKeyboardOffsetEnabled(false);
     setSettingsVisible(true);
     
     Animated.parallel([
@@ -124,7 +128,9 @@ export default function HomeScreen() {
         duration: 200,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]).start(() => {
+      setIsKeyboardOffsetEnabled(true);
+    });
   };
 
   const closeSettings = () => {
@@ -143,6 +149,7 @@ export default function HomeScreen() {
       }),
     ]).start(() => {
       setSettingsVisible(false);
+      setIsKeyboardOffsetEnabled(false);
     });
   };
 
@@ -325,6 +332,7 @@ export default function HomeScreen() {
       {settingsVisible && (
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          enabled={isKeyboardOffsetEnabled}
           style={[StyleSheet.absoluteFill, { zIndex: 50 }]}
         >
           <Animated.View 
