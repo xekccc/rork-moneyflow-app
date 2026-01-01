@@ -77,7 +77,7 @@ export default function HomeScreen() {
   };
 
   const handleSpendConfirm = () => {
-    const amount = parseFloat(spendAmount);
+    const amount = parseFloat(spendAmount.replace(',', '.'));
     if (isNaN(amount) || amount <= 0) {
       console.warn('[HomeScreen] Invalid spend amount:', spendAmount);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -147,7 +147,7 @@ export default function HomeScreen() {
   };
 
   const handleSaveAllowance = () => {
-    const amount = parseFloat(newAllowance);
+    const amount = parseFloat(newAllowance.replace(',', '.'));
     if (isNaN(amount) || amount <= 0) {
       console.warn('[HomeScreen] Invalid allowance amount:', newAllowance);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
