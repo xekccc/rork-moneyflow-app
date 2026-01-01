@@ -75,7 +75,7 @@ export const [BalanceProvider, useBalance] = createContextHook(() => {
   }, []);
 
   const spend = async (amount: number) => {
-    if (amount <= 0 || amount > balance) {
+    if (amount <= 0) {
       console.warn('[BalanceContext] Invalid spend amount:', amount);
       return;
     }
