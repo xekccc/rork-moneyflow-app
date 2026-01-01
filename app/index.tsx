@@ -323,7 +323,10 @@ export default function HomeScreen() {
       </Modal>
 
       {settingsVisible && (
-        <View style={StyleSheet.absoluteFill}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={[StyleSheet.absoluteFill, { zIndex: 50 }]}
+        >
           <Animated.View 
             style={[
               styles.settingsBackdrop, 
@@ -333,20 +336,21 @@ export default function HomeScreen() {
             <Pressable style={StyleSheet.absoluteFill} onPress={() => { Keyboard.dismiss(); closeSettings(); }} />
           </Animated.View>
           
-          <Animated.View 
-            style={[
-              styles.settingsSheet, 
-              { 
-                backgroundColor: theme.surface,
-                transform: [{ translateY: settingsSlide }],
-                maxHeight: SCREEN_HEIGHT * 0.8,
-              }
-            ]}
-          >
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-              style={{ flex: 1 }}
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+            <Animated.View 
+              style={[
+                styles.settingsSheet, 
+                { 
+                  backgroundColor: theme.surface,
+                  transform: [{ translateY: settingsSlide }],
+                  maxHeight: SCREEN_HEIGHT * 0.8,
+                  position: 'relative',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  width: '100%',
+                }
+              ]}
             >
               <View style={styles.sheetHandle}>
                 <View style={[styles.handleBar, { backgroundColor: theme.textTertiary }]} />
@@ -362,39 +366,39 @@ export default function HomeScreen() {
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
               >
-                  <Text style={[styles.settingsLabel, { color: theme.textSecondary }]}>
-                    Daily Allowance
-                  </Text>
-                  <View style={[styles.settingsInputContainer, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)' }]}>
-                    <Text style={[styles.inputCurrency, { color: theme.textTertiary }]}>€</Text>
-                    <TextInput
-                      style={[styles.settingsInput, { color: theme.text }]}
-                      value={newAllowance}
-                      onChangeText={setNewAllowance}
-                      keyboardType="decimal-pad"
-                      placeholder="10.00"
-                      placeholderTextColor={theme.textTertiary}
-                      selectionColor={theme.accent}
-                    />
-                  </View>
-                  
-                  <Text style={[styles.settingsHint, { color: theme.textTertiary }]}>
-                    This amount will be added to your balance at midnight each day.
-                  </Text>
+                <Text style={[styles.settingsLabel, { color: theme.textSecondary }]}>
+                  Daily Allowance
+                </Text>
+                <View style={[styles.settingsInputContainer, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)' }]}>
+                  <Text style={[styles.inputCurrency, { color: theme.textTertiary }]}>€</Text>
+                  <TextInput
+                    style={[styles.settingsInput, { color: theme.text }]}
+                    value={newAllowance}
+                    onChangeText={setNewAllowance}
+                    keyboardType="decimal-pad"
+                    placeholder="10.00"
+                    placeholderTextColor={theme.textTertiary}
+                    selectionColor={theme.accent}
+                  />
+                </View>
+                
+                <Text style={[styles.settingsHint, { color: theme.textTertiary }]}>
+                  This amount will be added to your balance at midnight each day.
+                </Text>
 
-                  <TouchableOpacity
-                    style={[styles.saveButton, { backgroundColor: theme.text }]}
-                    onPress={handleSaveAllowance}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={[styles.saveButtonText, { color: theme.background }]}>
-                      Save Changes
-                    </Text>
-                  </TouchableOpacity>
-                </ScrollView>
-            </KeyboardAvoidingView>
-          </Animated.View>
-        </View>
+                <TouchableOpacity
+                  style={[styles.saveButton, { backgroundColor: theme.text }]}
+                  onPress={handleSaveAllowance}
+                  activeOpacity={0.8}
+                >
+                  <Text style={[styles.saveButtonText, { color: theme.background }]}>
+                    Save Changes
+                  </Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </Animated.View>
+          </View>
+        </KeyboardAvoidingView>
       )}
     </View>
   );
