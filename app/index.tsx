@@ -275,6 +275,7 @@ export default function HomeScreen() {
                 style={styles.spendButtonGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
+                pointerEvents="none"
               >
                 <TrendingDown size={22} color="#FFFFFF" strokeWidth={2.5} />
                 <Text style={styles.spendButtonText}>Spend</Text>
