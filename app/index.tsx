@@ -343,12 +343,13 @@ export default function HomeScreen() {
                 { 
                   backgroundColor: theme.surface,
                   transform: [{ translateY: settingsSlide }],
-                  maxHeight: SCREEN_HEIGHT * 0.8,
+                  maxHeight: SCREEN_HEIGHT * 0.65,
                   position: 'relative',
                   bottom: 0,
                   left: 0,
                   right: 0,
                   width: '100%',
+                  flexShrink: 1,
                 }
               ]}
             >
@@ -649,7 +650,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   settingsScrollView: {
-    flex: 1,
+    width: '100%',
   },
   settingsContent: {
     padding: 24,
