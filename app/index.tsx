@@ -227,7 +227,7 @@ export default function HomeScreen() {
           <View style={styles.pixiuContainer}>
             <View style={[styles.pixiuGlow, { backgroundColor: theme.gold }]} />
             <Image
-              source={{ uri: 'https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/2mko0tb9xkb2vywtyipr3' }}
+              source={{ uri: 'https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/tlfafcd9jqscx3x1501xx' }}
               style={styles.pixiuImage}
               resizeMode="contain"
             />
