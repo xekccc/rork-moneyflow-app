@@ -339,13 +339,14 @@ export default function HomeScreen() {
               { 
                 backgroundColor: theme.surface,
                 transform: [{ translateY: settingsSlide }],
-                maxHeight: SCREEN_HEIGHT * 0.7,
+                maxHeight: SCREEN_HEIGHT * 0.8,
               }
             ]}
           >
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : undefined}
               style={{ flex: 1 }}
+              keyboardVerticalOffset={0}
             >
               <View style={styles.sheetHandle}>
                 <View style={[styles.handleBar, { backgroundColor: theme.textTertiary }]} />
