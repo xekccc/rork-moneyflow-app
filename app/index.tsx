@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -50,40 +50,6 @@ export default function HomeScreen() {
   const buttonScale = useRef(new Animated.Value(1)).current;
   const settingsSlide = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const settingsOpacity = useRef(new Animated.Value(0)).current;
-  const keyboardOffset = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const keyboardWillShow = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-      (e) => {
-        if (settingsVisible) {
-          Animated.spring(keyboardOffset, {
-            toValue: -e.endCoordinates.height,
-            friction: 8,
-            tension: 100,
-            useNativeDriver: true,
-          }).start();
-        }
-      }
-    );
-
-    const keyboardWillHide = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
-      () => {
-        Animated.spring(keyboardOffset, {
-          toValue: 0,
-          friction: 8,
-          tension: 100,
-          useNativeDriver: true,
-        }).start();
-      }
-    );
-
-    return () => {
-      keyboardWillShow.remove();
-      keyboardWillHide.remove();
-    };
-  }, [settingsVisible, keyboardOffset]);
 
   const handleButtonPressIn = useCallback(() => {
     Animated.spring(buttonScale, {
@@ -175,11 +141,6 @@ export default function HomeScreen() {
         duration: 150,
         useNativeDriver: true,
       }),
-      Animated.timing(keyboardOffset, {
-        toValue: 0,
-        duration: 150,
-        useNativeDriver: true,
-      }),
     ]).start(() => {
       setSettingsVisible(false);
     });
@@ -219,10 +180,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <KeyboardAvoidingView 
-      style={[styles.container, { backgroundColor: theme.background }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       
       <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -380,62 +338,64 @@ export default function HomeScreen() {
               styles.settingsSheet, 
               { 
                 backgroundColor: theme.surface,
-                transform: [
-                  { translateY: settingsSlide },
-                  { translateY: keyboardOffset },
-                ],
+                transform: [{ translateY: settingsSlide }],
                 maxHeight: SCREEN_HEIGHT * 0.7,
               }
             ]}
           >
-            <View style={styles.sheetHandle}>
-              <View style={[styles.handleBar, { backgroundColor: theme.textTertiary }]} />
-            </View>
-            
-            <View style={styles.settingsHeader}>
-              <Text style={[styles.settingsTitle, { color: theme.text }]}>Settings</Text>
-            </View>
-
-            <ScrollView 
-              style={styles.settingsScrollView}
-              contentContainerStyle={[styles.settingsContent, { paddingBottom: insets.bottom + 20 }]}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+              style={{ flex: 1 }}
             >
-                <Text style={[styles.settingsLabel, { color: theme.textSecondary }]}>
-                  Daily Allowance
-                </Text>
-                <View style={[styles.settingsInputContainer, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)' }]}>
-                  <Text style={[styles.inputCurrency, { color: theme.textTertiary }]}>€</Text>
-                  <TextInput
-                    style={[styles.settingsInput, { color: theme.text }]}
-                    value={newAllowance}
-                    onChangeText={setNewAllowance}
-                    keyboardType="decimal-pad"
-                    placeholder="10.00"
-                    placeholderTextColor={theme.textTertiary}
-                    selectionColor={theme.accent}
-                  />
-                </View>
-                
-                <Text style={[styles.settingsHint, { color: theme.textTertiary }]}>
-                  This amount will be added to your balance at midnight each day.
-                </Text>
+              <View style={styles.sheetHandle}>
+                <View style={[styles.handleBar, { backgroundColor: theme.textTertiary }]} />
+              </View>
+              
+              <View style={styles.settingsHeader}>
+                <Text style={[styles.settingsTitle, { color: theme.text }]}>Settings</Text>
+              </View>
 
-                <TouchableOpacity
-                  style={[styles.saveButton, { backgroundColor: theme.text }]}
-                  onPress={handleSaveAllowance}
-                  activeOpacity={0.8}
-                >
-                  <Text style={[styles.saveButtonText, { color: theme.background }]}>
-                    Save Changes
+              <ScrollView 
+                style={styles.settingsScrollView}
+                contentContainerStyle={[styles.settingsContent, { paddingBottom: insets.bottom + 20 }]}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+              >
+                  <Text style={[styles.settingsLabel, { color: theme.textSecondary }]}>
+                    Daily Allowance
                   </Text>
-                </TouchableOpacity>
-              </ScrollView>
+                  <View style={[styles.settingsInputContainer, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)' }]}>
+                    <Text style={[styles.inputCurrency, { color: theme.textTertiary }]}>€</Text>
+                    <TextInput
+                      style={[styles.settingsInput, { color: theme.text }]}
+                      value={newAllowance}
+                      onChangeText={setNewAllowance}
+                      keyboardType="decimal-pad"
+                      placeholder="10.00"
+                      placeholderTextColor={theme.textTertiary}
+                      selectionColor={theme.accent}
+                    />
+                  </View>
+                  
+                  <Text style={[styles.settingsHint, { color: theme.textTertiary }]}>
+                    This amount will be added to your balance at midnight each day.
+                  </Text>
+
+                  <TouchableOpacity
+                    style={[styles.saveButton, { backgroundColor: theme.text }]}
+                    onPress={handleSaveAllowance}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[styles.saveButtonText, { color: theme.background }]}>
+                      Save Changes
+                    </Text>
+                  </TouchableOpacity>
+                </ScrollView>
+            </KeyboardAvoidingView>
           </Animated.View>
         </View>
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
