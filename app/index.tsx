@@ -253,13 +253,13 @@ export default function HomeScreen() {
           tint={isDark ? 'dark' : 'light'}
           style={styles.blurOverlay}
         >
-          <Pressable
-            style={styles.overlayTouchable}
-            onPress={() => setSpendOverlayVisible(false)}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1 }}
           >
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.keyboardAvoid}
+            <Pressable
+              style={styles.overlayTouchable}
+              onPress={() => setSpendOverlayVisible(false)}
             >
               <Pressable 
                 style={[styles.spendCard, { backgroundColor: theme.surface }]}
@@ -317,8 +317,8 @@ export default function HomeScreen() {
                   </Text>
                 </TouchableOpacity>
               </Pressable>
-            </KeyboardAvoidingView>
-          </Pressable>
+            </Pressable>
+          </KeyboardAvoidingView>
         </BlurView>
       </Modal>
 
@@ -346,7 +346,7 @@ export default function HomeScreen() {
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : undefined}
               style={{ flex: 1 }}
-              keyboardVerticalOffset={0}
+              keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
             >
               <View style={styles.sheetHandle}>
                 <View style={[styles.handleBar, { backgroundColor: theme.textTertiary }]} />
