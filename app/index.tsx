@@ -78,7 +78,7 @@ export default function HomeScreen() {
 
   const handleSpendConfirm = () => {
     const amount = parseFloat(spendAmount);
-    if (isNaN(amount) || amount <= 0 || amount > balance) {
+    if (isNaN(amount) || amount <= 0) {
       console.warn('[HomeScreen] Invalid spend amount:', spendAmount);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       return;
