@@ -283,7 +283,7 @@ export default function HomeScreen() {
           </Animated.View>
         </View>
 
-        <View style={styles.coinPileContainer}>
+        <View style={styles.coinPileContainer} pointerEvents="box-none">
           <CoinPile balance={balance} />
         </View>
       </SafeAreaView>
